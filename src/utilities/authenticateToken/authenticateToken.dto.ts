@@ -7,15 +7,6 @@ export interface Permission {
   // Add more properties if necessary
 }
 
-export interface User {
-  user_id: string;
-  user_email: string;
-  user_fname: string;
-  user_lname: string;
-  user_nationality: string;
-  user_permissions: Permission; // Array of Permission objects
-}
-
 export interface ExtendedRequest extends Request {
     user: string;
     email: string;

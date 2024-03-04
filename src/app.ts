@@ -4,6 +4,7 @@ dotenv.config();
 
 // routes
 import authRoute_v1 from "./v1/routes/auth-routes";
+import usersRoute_v1 from "./v1/routes/user-routes";
 
 // Other imports
 import express from "express";
@@ -32,6 +33,7 @@ app.use(cors(corsOptions));
 
 //ROUTES
 app.use("/v1/auth", authRoute_v1);
+app.use("/v1/user", usersRoute_v1);
 
 const server = app.listen(port, () => {
   console.log(`Server has started on port ${port}`);

@@ -2,22 +2,29 @@ import { Request, Response } from "express";
 import { User } from "./createUser.dto";
 import * as bcrypt from "bcrypt";
 import { pool } from "../../../../../db";
-import { emailRegex } from "../../../../../helpers/regex";
+import * as Helpers from "../../../../../helpers/index";
 
 const register = async (req: Request, res: Response) => {
   if (req.method === "POST") {
     if (req.body) {
       const requiredFields = ["email", "password", "firstName", "lastName"];
 
-      // check data for each field in the body
+      // check data for each field in the body and validate format
       for (const field of requiredFields) {
         if (!req?.body?.[field]) {
           return res.status(400).json({ message: `${field} field is empty.` });
+        } else if (
+          (field === "firstName" || field === "lastName") &&
+          !Helpers.nameRegex.test(req?.body?.[field])
+        ) {
+          return res
+            .status(400)
+            .json({ message: `Invalid name format in the ${field} field.` });
         }
       }
 
       // Validate email format
-      if (!emailRegex.test(req.body.email)) {
+      if (!Helpers.emailRegex.test(req.body.email)) {
         return res.status(400).json({ message: "Invalid email format." });
       }
 
@@ -30,7 +37,7 @@ const register = async (req: Request, res: Response) => {
       // Check if there are any additional properties in the request body
       if (Object.keys(rest).length > 0) {
         return res.status(400).json({
-          error: "Additional properties in the request body are not allowed",
+          message: "Additional properties in the request body are not allowed.",
         });
       }
 
