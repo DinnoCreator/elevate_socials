@@ -70,6 +70,21 @@ CREATE TABLE
         payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
 
+CREATE TABLE
+    access_tokens (
+        id TEXT PRIMARY KEY DEFAULT uuid_generate_v4(),
+        user_id TEXT NOT NULL REFERENCES users (id),
+        access_token TEXT NOT NULL,
+        media_type TEXT NOT NULL,
+        expires_in_sec INT CHECK (expires_in_sec >= 0) DEFAULT NULL,
+        expires_in_days INT CHECK (expires_in_days >= 0) DEFAULT NULL,
+        media_user_id TEXT,
+        modified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        CONSTRAINT unique_user_media UNIQUE (user_id, media_type)
+    );
+
+
 -- Indexes
 CREATE INDEX idx_user_id_users ON users (id);
 
