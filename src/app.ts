@@ -35,6 +35,9 @@ app.use(cors(corsOptions));
 app.use("/v1/auth", authRoute_v1);
 app.use("/v1/user", usersRoute_v1);
 
+// Crons
+import "./cron-jobs"
+
 const server = app.listen(port, () => {
   console.log(`Server has started on port ${port}`);
 });

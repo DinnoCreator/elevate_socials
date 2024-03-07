@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { User } from "./createUser.dto";
 import * as bcrypt from "bcrypt";
+import * as nodemailer from "nodemailer";
 import { pool } from "../../../../../db";
 import * as Helpers from "../../../../../helpers/index";
 
@@ -65,6 +66,29 @@ const register = async (req: Request, res: Response) => {
             hashedPassword,
           ]
         );
+
+        //credentials for email transportation
+        const transport = nodemailer.createTransport({
+          host: "smtp.office365.com",
+          port: 578,
+          auth: {
+            user: "reventlifyhub@outlook.com",
+            pass: process.env.MAIL,
+          },
+        });
+
+        //Welcome Message
+        const msg = {
+          from: "Reventlify <reventlifyhub@outlook.com>", // sender address
+          to: newUser.rows[0].email, // list of receivers
+          subject: "Welcome To Elevate socials", // Subject line
+          text: `${newUser.rows[0].first_name} thank you for choosing Elevate socials.`, // plain text body
+          html: `<h2>Welcome To Elevate socials</h2>
+        <p>${newUser.rows[0].first_name} thank you for choosing <strong>Elevate socials</strong>.</p>`, //HTML message
+        };
+
+        // send mail with defined transport object
+        await transport.sendMail(msg);
 
         // return
         return res.status(200).json({
